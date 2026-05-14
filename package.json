@@ -11,9 +11,6 @@
     "packages/agentity-manifest-gen"
   ],
   "packageManager": "pnpm@11.1.2",
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "sharp"]
-  },
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",

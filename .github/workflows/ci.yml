@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
       - run: pnpm build
 
   lint:
@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
       - run: cargo clippy --workspace -- -D warnings
       - run: cargo fmt --check
       - run: ruff check packages/agentity-sdk-python packages/agentity-registry
