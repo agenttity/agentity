@@ -1,0 +1,6 @@
+packages:
+  - 'packages/agentity-sdk-ts'
+  - 'packages/agentity-cli'
+  - 'packages/agentity-inspector'
+  - 'packages/agentity-middleware/typescript'
+  - 'packages/agentity-manifest-gen'

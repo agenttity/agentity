@@ -1,0 +1,74 @@
+name: CI
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --workspace
+
+  test-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          pip install -e packages/agentity-sdk-python[dev]
+          pip install -e packages/agentity-registry[dev]
+          pip install -e packages/agentity-middleware/python[dev]
+          pip install -e packages/agentity-mcp[dev]
+          pip install -e packages/agentity-a2a[dev]
+          pytest packages/agentity-sdk-python/tests
+          pytest packages/agentity-registry/agentity_registry/tests
+          pytest packages/agentity-mcp/tests
+          pytest packages/agentity-a2a/tests
+
+  test-ts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install
+      - run: cargo clippy --workspace -- -D warnings
+      - run: cargo fmt --check
+      - run: ruff check packages/agentity-sdk-python packages/agentity-registry
+      - run: pnpm run lint

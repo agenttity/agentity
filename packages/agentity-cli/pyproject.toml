@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentity-cli"
+version = "0.1.0"
+description = "Agentity CLI — create, inspect, revoke, verify, manifest"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "agentity-sdk-python>=0.1",
+]
+
+[project.scripts]
+agentity = "agentity_cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]

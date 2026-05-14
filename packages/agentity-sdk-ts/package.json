@@ -1,0 +1,24 @@
+{
+  "name": "@agentity/sdk",
+  "version": "0.1.0",
+  "description": "Agentity Protocol TypeScript SDK — identity, signer, Vercel AI SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@noble/ed25519": "^2.1",
+    "@noble/hashes": "^1.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.5",
+    "vitest": "^2.0"
+  }
+}
