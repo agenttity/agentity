@@ -1,7 +1,7 @@
-import json
 import hashlib
 from typing import Optional, Set
-from fastapi import Request, HTTPException
+from fastapi import Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from agentity_sdk import AgentKeyPair, AgentIdentity
 
@@ -22,27 +22,27 @@ class AgentityMiddleware(BaseHTTPMiddleware):
         timestamp = request.headers.get("Agentity-Timestamp")
 
         if not all([token, nonce, timestamp]):
-            raise HTTPException(status_code=401, detail="Missing Agentity headers")
+            return JSONResponse(status_code=401, content={"detail": "Missing Agentity headers"})
 
         if nonce in self._used_nonces:
-            raise HTTPException(status_code=403, detail="Nonce replayed")
+            return JSONResponse(status_code=403, content={"detail": "Nonce replayed"})
 
         from datetime import datetime, timezone
         try:
             ts = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
             now = datetime.now(timezone.utc)
             if abs((now - ts).total_seconds()) > self._tolerance:
-                raise HTTPException(status_code=403, detail="Timestamp out of tolerance")
+                return JSONResponse(status_code=403, content={"detail": "Timestamp out of tolerance"})
         except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid timestamp format")
+            return JSONResponse(status_code=400, content={"detail": "Invalid timestamp format"})
 
         try:
             aid, sig = AgentIdentity.decode_token(token)
         except Exception:
-            raise HTTPException(status_code=400, detail="Invalid token format")
+            return JSONResponse(status_code=400, content={"detail": "Invalid token format"})
 
         if aid.is_expired():
-            raise HTTPException(status_code=403, detail="AID expired")
+            return JSONResponse(status_code=403, content={"detail": "AID expired"})
 
         body = await request.body()
         body_hash = hashlib.sha256(body).hexdigest() if body else None
@@ -51,17 +51,17 @@ class AgentityMiddleware(BaseHTTPMiddleware):
             request.method, str(request.url.path), body_hash, sig,
         )
         if not valid:
-            raise HTTPException(status_code=403, detail="Invalid signature")
+            return JSONResponse(status_code=403, content={"detail": "Invalid signature"})
 
         if self._registry_url:
             import httpx
             async with httpx.AsyncClient() as client:
                 resp = await client.get(f"{self._registry_url}/did/{aid.did}/status")
                 if resp.status_code != 200:
-                    raise HTTPException(status_code=403, detail="AID not found in registry")
+                    return JSONResponse(status_code=403, content={"detail": "AID not found in registry"})
                 status = resp.json().get("status")
                 if status != "active":
-                    raise HTTPException(status_code=403, detail=f"AID status is {status}")
+                    return JSONResponse(status_code=403, content={"detail": f"AID status is {status}"})
 
         self._used_nonces.add(nonce)
         request.state.agent_did = aid.did

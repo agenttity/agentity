@@ -29,8 +29,13 @@ jobs:
           pip install -e packages/agentity-middleware/python[dev]
           pip install -e packages/agentity-mcp[dev]
           pip install -e packages/agentity-a2a[dev]
+          pip install -e packages/agentity-cli[dev]
           pytest packages/agentity-sdk-python/tests
           pytest packages/agentity-registry/agentity_registry/tests
+          pytest packages/agentity-middleware/python/tests
+          pytest packages/agentity-mcp/tests
+          pytest packages/agentity-a2a/tests
+          pytest packages/agentity-cli/tests
 
   test-ts:
     runs-on: ubuntu-latest
@@ -43,8 +48,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --ignore-scripts
       - run: pnpm build
-
-  lint:
+      - run: pnpm test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

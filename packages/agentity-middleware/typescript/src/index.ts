@@ -27,6 +27,7 @@ export function agentityMiddleware(opts: AgentityMiddlewareOptions = {}) {
       res.status(403).json({ error: 'Nonce replayed' });
       return;
     }
+    usedNonces.add(nonce);
 
     const ts = new Date(timestamp).getTime();
     if (Math.abs(Date.now() - ts) > tolerance * 1000) {
@@ -54,7 +55,6 @@ export function agentityMiddleware(opts: AgentityMiddlewareOptions = {}) {
         return;
       }
 
-      usedNonces.add(nonce);
       (req as any).agentDid = aid.did;
       (req as any).agentScopes = aid.scope;
       next();
