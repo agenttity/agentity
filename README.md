@@ -1,5 +1,7 @@
 # Agentity Protocol
 
+[![CI](https://github.com/agenttity/agentity/actions/workflows/ci.yml/badge.svg)](https://github.com/agenttity/agentity/actions/workflows/ci.yml)
+
 **Open source cryptographic identity protocol for AI agents.**
 
 Every AI agent receives a W3C-compatible DID (`did:agentity`), a signed Agent Identity Document (AID) with Ed25519 keys, and a scope system validated against service provider manifests. Delegation chains, revocation cascades, anti-replay nonces — designed for LangChain, CrewAI, Vercel AI SDK, MCP, A2A, and any HTTP infrastructure.
