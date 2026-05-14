@@ -259,7 +259,7 @@ docker compose up -d
 | Core language | Rust | Max performance, WASM-ready for edge |
 | SDK languages | Python + TypeScript | LangChain/CrewAI + Vercel AI/Next.js ecosystems |
 | Registry store | Pluggable (memory → postgres) | Dev to production without code changes |
-| License | Apache 2.0 | Patent protection, commercial-friendly |
+| License | MIT | Max permissive, no restrictions |
 
 ---
 
@@ -302,4 +302,4 @@ cargo test --workspace && pnpm test && pytest ... # 69 tests total
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
