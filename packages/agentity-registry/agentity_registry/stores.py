@@ -1,10 +1,8 @@
 """Storage backends for Agentity Registry."""
 
 import json
-import os
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
-from typing import Optional
 
 from fastapi import HTTPException, WebSocket, WebSocketDisconnect
 
@@ -122,7 +120,6 @@ class InMemoryStore(BaseStore):
 
     async def list_agents(self) -> list[AgentInfo]:
         result = []
-        now = datetime.now(timezone.utc)
         for d, agent in self._agents.items():
             result.append(AgentInfo(
                 did=d,

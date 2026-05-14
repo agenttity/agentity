@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from agentity_registry import create_app
 import json
