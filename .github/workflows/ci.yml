@@ -61,6 +61,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --ignore-scripts
+      - run: pnpm build
       - run: cargo clippy --workspace -- -D warnings
       - run: cargo fmt --check
       - run: ruff check packages/agentity-sdk-python packages/agentity-registry
