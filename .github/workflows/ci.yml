@@ -49,6 +49,8 @@ jobs:
       - run: pnpm install --ignore-scripts
       - run: pnpm build
       - run: pnpm test
+
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
