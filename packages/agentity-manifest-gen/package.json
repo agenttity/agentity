@@ -1,12 +1,13 @@
 {
   "name": "@agentity/manifest-gen",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Agentity provider manifest generator",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
     "agentity-manifest-gen": "./dist/index.js"
   },
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
