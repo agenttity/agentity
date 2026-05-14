@@ -83,6 +83,7 @@ impl AgentKeyPair {
         self.sign(payload.as_bytes())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn verify_request(
         public_key_b64: &str,
         did: &str,
