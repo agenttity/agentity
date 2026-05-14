@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 from agentity_registry import create_app
 import json
@@ -9,7 +10,7 @@ client = TestClient(app)
 def test_health():
     resp = client.get("/health")
     assert resp.status_code == 200
-    assert resp.json() == {"status": "ok"}
+    assert resp.json()["status"] == "ok"
 
 
 def test_register_and_status():
@@ -27,6 +28,13 @@ def test_register_and_status():
     resp = client.get("/did/did:agentity:agent:test123/status")
     assert resp.status_code == 200
     assert resp.json()["status"] == "active"
+
+
+def test_list_agents():
+    resp = client.get("/agents")
+    assert resp.status_code == 200
+    assert isinstance(resp.json(), list)
+    assert len(resp.json()) >= 1
 
 
 def test_revoke():

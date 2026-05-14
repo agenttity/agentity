@@ -5,8 +5,17 @@ from datetime import datetime
 
 class AgentStatus(BaseModel):
     did: str
-    status: str  # active | revoked | expired
+    status: str
     updatedAt: datetime
+
+
+class AgentInfo(BaseModel):
+    did: str
+    status: str
+    owner_did: str
+    scopes: list[str] = []
+    created_at: datetime
+    expires_at: Optional[datetime] = None
 
 
 class RevokeRequest(BaseModel):
@@ -17,7 +26,7 @@ class RevokeRequest(BaseModel):
 
 class AuditEntry(BaseModel):
     did: str
-    event: str  # created | revoked | rotated
+    event: str
     timestamp: datetime
     actor: Optional[str] = None
     reason: Optional[str] = None

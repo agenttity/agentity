@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  registry:
+    build:
+      context: ./packages/agentity-registry
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - AGENTITY_STORE=postgres
+      - DATABASE_URL=postgresql+asyncpg://agentity:agentity@postgres:5432/agentity
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: agentity
+      POSTGRES_PASSWORD: agentity
+      POSTGRES_DB: agentity
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:
