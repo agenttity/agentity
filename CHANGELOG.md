@@ -11,9 +11,19 @@
 - `agentity-cli` — `agentity create`, `inspect`, `verify`, `sign`, `manifest` commands
 - `agentity-mcp` — MCP Anthropic protocol plugin wrapper
 - `agentity-a2a` — A2A Google protocol plugin client
-- `agentity-inspector` — Next.js 15 dashboard (static export)
+- `agentity-inspector` — Next.js 15 dashboard with WebSocket live revocations
 - `agentity-manifest-gen` — Provider manifest JSON generator
 - `agentity-spec` — Full RFC protocol specification
+- `agentity-registry` — PostgreSQL + Redis store, `AGENTITY_STORE` env var, Docker Compose
 - CI/CD — GitHub Actions workflows for Rust + Python + TypeScript
 - E2E examples in Python and TypeScript
 - License: Apache 2.0
+
+### Published
+- npm: `@agentity/sdk`, `@agentity/middleware-express`, `@agentity/manifest-gen`
+- PyPI: `agentity-sdk-python`, `agentity-registry`, `agentity-middleware-python`, `agentity-mcp`
+
+### Tests
+- Rust: 17 tests
+- Python: 33 tests (SDK + Registry + Middleware + MCP + A2A + CLI)
+- TypeScript: 19 tests (SDK + Middleware + Manifest)

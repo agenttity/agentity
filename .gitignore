@@ -1,6 +1,5 @@
 node_modules/
 target/
-dist/
 .next/
 out/
 __pycache__/
@@ -9,3 +8,6 @@ __pycache__/
 *.egg-info/
 *.egg
 .env
+
+# Python build artefacts (pip install -e / python -m build)
+packages/*/dist/

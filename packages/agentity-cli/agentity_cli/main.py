@@ -16,14 +16,20 @@ def cmd_create(args):
         parent=args.parent,
         delegation_depth=args.depth,
     )
-    output = {
+    data = {
         "did": aid.did,
         "publicKey": kp.public_key_b64(),
         "secretKey": kp.secret_key_b64(),
         "fingerprint": kp.fingerprint(),
         "aid": aid.model_dump(),
     }
-    print(json.dumps(output, indent=2, default=str))
+    text = json.dumps(data, indent=2, default=str)
+    if args.output:
+        with open(args.output, "w") as f:
+            f.write(text)
+        print(f"Saved to {args.output}")
+    else:
+        print(text)
 
 
 def cmd_inspect(args):
@@ -114,6 +120,7 @@ def main():
     p_create.add_argument("--ttl", type=int, default=30, help="TTL in days")
     p_create.add_argument("--parent", help="Parent DID")
     p_create.add_argument("--depth", type=int, default=0, help="Delegation depth")
+    p_create.add_argument("-o", "--output", help="Output file path")
 
     p_inspect = sub.add_parser("inspect", help="Inspect an AID file")
     p_inspect.add_argument("file", help="AID JSON file")

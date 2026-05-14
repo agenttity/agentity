@@ -1,6 +1,9 @@
 # Agentity Protocol
 
 [![CI](https://github.com/agenttity/agentity/actions/workflows/ci.yml/badge.svg)](https://github.com/agenttity/agentity/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@agentity/sdk)](https://www.npmjs.com/package/@agentity/sdk)
+[![PyPI](https://img.shields.io/pypi/v/agentity-sdk-python)](https://pypi.org/project/agentity-sdk-python/)
+[![License](https://img.shields.io/github/license/agenttity/agentity)](https://github.com/agenttity/agentity/blob/main/LICENSE)
 
 **Open source cryptographic identity protocol for AI agents.**
 
