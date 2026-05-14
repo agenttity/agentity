@@ -9,6 +9,7 @@ __all__ = [
     "AgentDid",
     "AidStatus",
     "RequestSigner",
+    "RequestVerifier",
     "AgentityToken",
     "ScopeEntry",
     "ScopeRisk",

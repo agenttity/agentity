@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from datetime import datetime, timezone
-from typing import Optional
 from contextlib import asynccontextmanager
 
 from .models import AgentStatus, RevokeRequest, AuditEntry, RegisterRequest

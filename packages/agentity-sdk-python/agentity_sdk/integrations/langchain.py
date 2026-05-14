@@ -1,6 +1,6 @@
 """LangChain integration for Agentity Protocol."""
 
-from typing import Optional, Any
+from typing import Optional
 from agentity_sdk import AgentKeyPair, AgentIdentity, RequestSigner
 
 
