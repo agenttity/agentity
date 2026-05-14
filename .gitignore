@@ -9,5 +9,5 @@ __pycache__/
 *.egg
 .env
 
-# Python build artefacts (pip install -e / python -m build)
-packages/*/dist/
+# Build artefacts
+**/dist/
