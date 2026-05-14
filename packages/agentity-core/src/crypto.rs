@@ -1,8 +1,8 @@
-use ed25519_dalek::{SigningKey, VerifyingKey, Signer, Verifier, Signature};
-use rand::rngs::OsRng;
-use sha2::{Sha256, Digest};
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use crate::error::AgentityError;
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
+use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, VerifyingKey};
+use rand::rngs::OsRng;
+use sha2::{Digest, Sha256};
 
 pub struct AgentKeyPair {
     pub signing_key: SigningKey,
@@ -13,15 +13,22 @@ impl AgentKeyPair {
     pub fn generate() -> Self {
         let signing_key = SigningKey::generate(&mut OsRng);
         let verifying_key = signing_key.verifying_key();
-        Self { signing_key, verifying_key }
+        Self {
+            signing_key,
+            verifying_key,
+        }
     }
 
     pub fn from_bytes(secret: &[u8]) -> Result<Self, AgentityError> {
-        let secret_array: [u8; 32] = secret.try_into()
+        let secret_array: [u8; 32] = secret
+            .try_into()
             .map_err(|_| AgentityError::Crypto("Invalid secret key length".into()))?;
         let signing_key = SigningKey::from_bytes(&secret_array);
         let verifying_key = signing_key.verifying_key();
-        Ok(Self { signing_key, verifying_key })
+        Ok(Self {
+            signing_key,
+            verifying_key,
+        })
     }
 
     pub fn public_key_bytes(&self) -> [u8; 32] {
@@ -79,7 +86,15 @@ impl AgentKeyPair {
         path: &str,
         body_hash: Option<&str>,
     ) -> String {
-        let payload = format!("{}:{}:{}:{}:{}:{}", did, nonce, timestamp, method, path, body_hash.unwrap_or(""));
+        let payload = format!(
+            "{}:{}:{}:{}:{}:{}",
+            did,
+            nonce,
+            timestamp,
+            method,
+            path,
+            body_hash.unwrap_or("")
+        );
         self.sign(payload.as_bytes())
     }
 
@@ -94,7 +109,15 @@ impl AgentKeyPair {
         body_hash: Option<&str>,
         sig_b64: &str,
     ) -> bool {
-        let payload = format!("{}:{}:{}:{}:{}:{}", did, nonce, timestamp, method, path, body_hash.unwrap_or(""));
+        let payload = format!(
+            "{}:{}:{}:{}:{}:{}",
+            did,
+            nonce,
+            timestamp,
+            method,
+            path,
+            body_hash.unwrap_or("")
+        );
         Self::verify(public_key_b64, payload.as_bytes(), sig_b64)
     }
 }
@@ -133,7 +156,14 @@ mod tests {
         let timestamp = "2026-05-08T12:00:00Z";
         let sig = kp.sign_request(did, &nonce, timestamp, "GET", "/api/resource", None);
         assert!(AgentKeyPair::verify_request(
-            &kp.public_key_b64(), did, &nonce, timestamp, "GET", "/api/resource", None, &sig
+            &kp.public_key_b64(),
+            did,
+            &nonce,
+            timestamp,
+            "GET",
+            "/api/resource",
+            None,
+            &sig
         ));
     }
 

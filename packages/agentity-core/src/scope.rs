@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::{AgentKeyPair, AgentityError};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -65,7 +65,13 @@ impl ProviderManifest {
         }
     }
 
-    pub fn add_scope(&mut self, id: &str, description: &str, risk: ScopeRisk, requires: Vec<String>) {
+    pub fn add_scope(
+        &mut self,
+        id: &str,
+        description: &str,
+        risk: ScopeRisk,
+        requires: Vec<String>,
+    ) {
         self.scopes.push(ScopeEntry {
             id: id.to_string(),
             description: description.to_string(),
@@ -99,10 +105,15 @@ impl ProviderManifest {
     }
 
     pub fn has_scope(agent_scopes: &[String], required_scope: &str) -> bool {
-        agent_scopes.iter().any(|s| scope_matches(required_scope, s))
+        agent_scopes
+            .iter()
+            .any(|s| scope_matches(required_scope, s))
     }
 
-    pub fn validate_scopes(agent_scopes: &[String], manifest_scopes: &[ScopeEntry]) -> Result<(), AgentityError> {
+    pub fn validate_scopes(
+        agent_scopes: &[String],
+        manifest_scopes: &[ScopeEntry],
+    ) -> Result<(), AgentityError> {
         let manifest_ids: Vec<String> = manifest_scopes.iter().map(|s| s.id.clone()).collect();
         for scope in agent_scopes {
             if !Self::verify_scope(scope, &manifest_ids) {
@@ -138,8 +149,14 @@ mod tests {
 
     #[test]
     fn test_scope_matching_exact() {
-        assert!(scope_matches("stripe:payments:read", "stripe:payments:read"));
-        assert!(!scope_matches("stripe:payments:read", "stripe:payments:write"));
+        assert!(scope_matches(
+            "stripe:payments:read",
+            "stripe:payments:read"
+        ));
+        assert!(!scope_matches(
+            "stripe:payments:read",
+            "stripe:payments:write"
+        ));
     }
 
     #[test]
@@ -152,17 +169,34 @@ mod tests {
 
     #[test]
     fn test_verify_scope() {
-        let allowed = vec!["stripe:payments:read".to_string(), "calendar:*:*".to_string()];
-        assert!(ProviderManifest::verify_scope("stripe:payments:read", &allowed));
-        assert!(ProviderManifest::verify_scope("calendar:events:write", &allowed));
-        assert!(!ProviderManifest::verify_scope("stripe:payments:write", &allowed));
+        let allowed = vec![
+            "stripe:payments:read".to_string(),
+            "calendar:*:*".to_string(),
+        ];
+        assert!(ProviderManifest::verify_scope(
+            "stripe:payments:read",
+            &allowed
+        ));
+        assert!(ProviderManifest::verify_scope(
+            "calendar:events:write",
+            &allowed
+        ));
+        assert!(!ProviderManifest::verify_scope(
+            "stripe:payments:write",
+            &allowed
+        ));
     }
 
     #[test]
     fn test_manifest_validation() {
         let mut manifest = ProviderManifest::new("did:agentity:provider:test", "Test API");
         manifest.add_scope("test:data:read", "Read data", ScopeRisk::Low, vec![]);
-        manifest.add_scope("test:data:write", "Write data", ScopeRisk::High, vec!["test:data:read".into()]);
+        manifest.add_scope(
+            "test:data:write",
+            "Write data",
+            ScopeRisk::High,
+            vec!["test:data:read".into()],
+        );
 
         let valid_scopes = vec!["test:data:read".to_string()];
         assert!(ProviderManifest::validate_scopes(&valid_scopes, &manifest.scopes).is_ok());

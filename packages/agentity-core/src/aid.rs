@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
-use chrono::{DateTime, Utc};
-use crate::{AgentKeyPair, AgentDid, AgentityError};
+use crate::{AgentDid, AgentKeyPair, AgentityError};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -155,7 +155,15 @@ impl AgentIdentityDocument {
         false
     }
 
-    pub fn encode_token(&self, kp: &AgentKeyPair, nonce: &str, timestamp: &str, method: &str, path: &str, body_hash: Option<&str>) -> String {
+    pub fn encode_token(
+        &self,
+        kp: &AgentKeyPair,
+        nonce: &str,
+        timestamp: &str,
+        method: &str,
+        path: &str,
+        body_hash: Option<&str>,
+    ) -> String {
         let aid_json = serde_json::to_string(self).unwrap_or_default();
         let aid_b64 = URL_SAFE_NO_PAD.encode(aid_json);
         let sig = kp.sign_request(&self.did, nonce, timestamp, method, path, body_hash);
@@ -189,7 +197,8 @@ mod tests {
             None,
             0,
             None,
-        ).unwrap();
+        )
+        .unwrap();
         assert!(aid.verify_signature());
         assert!(!aid.is_expired());
         assert_eq!(aid.status, AidStatus::Active);
@@ -198,9 +207,8 @@ mod tests {
     #[test]
     fn test_delegation_depth_limit() {
         let kp = AgentKeyPair::generate();
-        let result = AgentIdentityDocument::new(
-            &kp, "did:agentity:human:owner", vec![], 30, None, 11, None
-        );
+        let result =
+            AgentIdentityDocument::new(&kp, "did:agentity:human:owner", vec![], 30, None, 11, None);
         assert!(result.is_err());
     }
 
@@ -220,7 +228,8 @@ mod tests {
             None,
             0,
             Some(model),
-        ).unwrap();
+        )
+        .unwrap();
         assert!(aid.verify_signature());
         assert_eq!(aid.model.as_ref().unwrap().provider, "anthropic");
     }
@@ -236,7 +245,8 @@ mod tests {
             Some("did:agentity:agent:parent123".into()),
             1,
             None,
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(aid.parent, Some("did:agentity:agent:parent123".into()));
         assert_eq!(aid.delegation_depth, 1);
     }
@@ -244,8 +254,24 @@ mod tests {
     #[test]
     fn test_encode_decode_token() {
         let kp = AgentKeyPair::generate();
-        let aid = AgentIdentityDocument::new(&kp, "did:agentity:human:alice", vec!["test:read".into()], 30, None, 0, None).unwrap();
-        let token = aid.encode_token(&kp, "nonce-123", "2026-05-08T12:00:00Z", "GET", "/api/data", None);
+        let aid = AgentIdentityDocument::new(
+            &kp,
+            "did:agentity:human:alice",
+            vec!["test:read".into()],
+            30,
+            None,
+            0,
+            None,
+        )
+        .unwrap();
+        let token = aid.encode_token(
+            &kp,
+            "nonce-123",
+            "2026-05-08T12:00:00Z",
+            "GET",
+            "/api/data",
+            None,
+        );
         let (decoded_aid, sig) = AgentIdentityDocument::decode_token(&token).unwrap();
         assert_eq!(decoded_aid.did, aid.did);
         assert_eq!(decoded_aid.scope, aid.scope);
