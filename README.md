@@ -12,27 +12,98 @@ did:agentity:agent:7Xj3mK9pL2nQ8vRtYwZb4cFdHsNaEgUi
 
 ## Architecture
 
+The protocol is organized in **four layers**, from cryptographic primitives up to user-facing tools:
+
 ```
-                    ┌──────────────┐
-                    │  Inspector   │  Next.js dashboard (WebSocket live)
-                    └──────┬───────┘
-                           │ HTTP + WS
-┌──────────┐    ┌──────────┴────────┐    ┌──────────┐
-│   CLI    │───▶│     Registry      │◀───│Middleware│  FastAPI / Express
-│ Python   │    │  FastAPI + PG+Redis│   │ Python/TS│
-└──────────┘    └──────────┬────────┘    └──────────┘
-                           │
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-        ┌──────────┐ ┌──────────┐ ┌──────────┐
-        │SDK Python│ │ SDK TypeScript││ MCP/A2A │
-        │LangChain │ │Vercel AI │ │ Plugins │
-        │ CrewAI   │ │ Next.js  │ │         │
-        └──────────┘ └──────────┘ └──────────┘
-              ▲            ▲
-              │   Core     │
-              └─── Rust ───┘
-              crypto / DID / AID
+═══════════════════════════════════════════════════════════════════
+                     USER INTERFACES
+═══════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────┐    ┌──────────────────────────────────┐
+  │     agentity-cli     │    │      agentity-inspector          │
+  │  create · inspect    │    │   Next.js dashboard · WebSocket  │
+  │  verify · sign       │    │   agent list · live revocations  │
+  │  manifest            │    │   scope explorer                 │
+  └──────────┬───────────┘    └──────────────┬───────────────────┘
+             │                               │
+             │          HTTP / WS            │
+             ▼                               ▼
+═══════════════════════════════════════════════════════════════════
+                     SERVICE LAYER
+═══════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                   agentity-registry                         │
+  │   FastAPI · PostgreSQL · Redis                               │
+  │   POST /register · GET /did/{did} · POST /revoke · WS /ws   │
+  │   lookup · status · cascade revocation · audit log           │
+  └───────┬────────────────────────────────────┬─────────────────┘
+          │                                    │
+          │   HTTP + Agentity-Token header     │
+          ▼                                    ▼
+  ┌─────────────────┐                ┌──────────────────────────┐
+  │  agentity-sdk   │                │  agentity-middleware     │
+  │  Python / TS    │◄──────────────►│  FastAPI / Express       │
+  │                 │                │  automatic token verify  │
+  │  + agentity-mcp │                │                          │
+  │  + agentity-a2a │                │                          │
+  └────────┬────────┘                └──────────────────────────┘
+           │
+           │    builds on
+           ▼
+═══════════════════════════════════════════════════════════════════
+                    IDENTITY LAYER
+═══════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                   agentity-sdk                               │
+  │  AgentKeyPair · AgentIdentity · RequestSigner · RequestVer.  │
+  │  ProviderManifest · Scope matching · Delegation chain        │
+  │  LangChain mixin · Vercel AI SDK                             │
+  └────────┬──────────────────────────────────┬──────────────────┘
+           │                                  │
+           ▼                                  ▼
+═══════════════════════════════════════════════════════════════════
+                      CORE LAYER
+═══════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                   agentity-core (Rust)                       │
+  │  Ed25519 keypairs · SHA-256 fingerprints · base58 DIDs       │
+  │  AgentIdentityDocument · Proof signing/verification          │
+  │  Token encoding · Scope wildcard matching                    │
+  └──────────────────────────────────────────────────────────────┘
+```
+
+### Request flow
+
+```
+Agent SDK             Middleware              Registry
+    │                     │                      │
+    │  1. Sign request    │                      │
+    │  with Agent-Token   │                      │
+    │────────────────────►│                      │
+    │                     │  2. Verify token     │
+    │                     │  + nonce + timestamp │
+    │                     │──────────────────────►
+    │                     │  3. Check status     │
+    │                     │◄──────────────────────│
+    │                     │  4. Valid: forward   │
+    │                     │                      │
+    │  5. Response        │                      │
+    │◄────────────────────│                      │
+```
+  ┌──────┐          ┌──────────┐          ┌────────────┐
+  │Agent │ 1.sign   │Middleware│ 2.verify │  Registry  │
+  │  SDK │─────────►│FastAPI/  │─────────►│  /status   │
+  │      │  request │ Express  │  check   │            │
+  │      │          │          │◄─────────│  active?   │
+  │      │          │          │ 3.ok     │            │
+  │      │          │ 4.forward│          └────────────┘
+  │      │          │ to route │
+  │      │          │          │
+  │      │◄─────────│──────────│────────── 200 OK
+  └──────┘  5.response
 ```
 
 ---
