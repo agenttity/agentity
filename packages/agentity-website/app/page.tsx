@@ -17,10 +17,19 @@ function Nav() {
   return (
     <nav className="flex items-center justify-between py-4 border-b border-border-ash">
       <span className="font-ibm-plex-mono text-sm font-semibold text-text-jet">Agentity</span>
-      <div className="flex gap-0">
-        <a href="https://github.com/agenttity/agentity" className="text-text-graphite text-caption font-rubik-variable font-normal bg-page-white/80 border border-border-ash px-[9px] py-0 rounded-l-[4px] leading-8 hover:text-primary-violet transition-colors">GitHub</a>
-        <a href="https://www.npmjs.com/package/@agentity/sdk" className="text-text-graphite text-caption font-rubik-variable font-normal bg-page-white/80 border border-border-ash px-[10px] py-0 rounded-r-[4px] leading-8 hover:text-primary-violet transition-colors">npm</a>
-        <a href="https://pypi.org/project/agentity-sdk-python/" className="ml-2 text-caption font-rubik-variable font-normal text-primary-violet px-3 py-0 leading-8 hover:underline">PyPI</a>
+      <div className="flex items-center gap-3">
+        <a href="https://github.com/agenttity/agentity" className="flex items-center gap-1.5 text-text-graphite text-caption font-rubik-variable font-medium px-3 py-1.5 rounded-md border border-border-ash hover:border-primary-violet hover:text-primary-violet transition-colors">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/@agentity/sdk" className="flex items-center gap-1.5 text-text-graphite text-caption font-rubik-variable font-medium px-3 py-1.5 rounded-md border border-border-ash hover:border-primary-violet hover:text-primary-violet transition-colors">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13 13h-2V5H8v8H3V3h10v10z"/></svg>
+          npm
+        </a>
+        <a href="https://pypi.org/project/agentity-sdk-python/" className="flex items-center gap-1.5 text-primary-violet text-caption font-rubik-variable font-medium px-3 py-1.5 rounded-md border border-primary-violet hover:bg-primary-violet hover:text-white transition-colors">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.905.177a.68.68 0 00-.456.209L.223 7.548a.667.667 0 00.003.94l7.25 7.144a.677.677 0 00.948.003l7.14-7.277a.668.668 0 00-.002-.938L8.497.39a.68.68 0 00-.455-.212v-.001zm.029 1.174c.155 0 .31.058.428.175l5.818 5.65a.604.604 0 010 .852l-5.82 5.65a.603.603 0 01-.852 0l-5.82-5.649a.604.604 0 010-.852l5.82-5.649a.602.602 0 01.426-.177zM8 2.463L2.493 8l5.44 5.463L13.507 8 8 2.463z"/></svg>
+          PyPI
+        </a>
       </div>
     </nav>
   );
