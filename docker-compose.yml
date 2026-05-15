@@ -9,8 +9,13 @@ services:
       - "8000:8000"
     environment:
       - AGENTITY_STORE=postgres
+      - AGENTITY_AUTH_URL=http://localhost:8765
       - DATABASE_URL=postgresql+asyncpg://agentity:agentity@postgres:5432/agentity
       - REDIS_URL=redis://redis:6379/0
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-}
     depends_on:
       postgres:
         condition: service_healthy
