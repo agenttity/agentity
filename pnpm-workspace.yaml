@@ -4,3 +4,4 @@ packages:
   - 'packages/agentity-inspector'
   - 'packages/agentity-middleware/typescript'
   - 'packages/agentity-manifest-gen'
+  - 'packages/agentity-website'

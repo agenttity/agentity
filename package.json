@@ -1,15 +1,6 @@
 {
   "name": "agentity",
   "private": true,
-  "workspaces": [
-    "packages/agentity-sdk-ts",
-    "packages/agentity-cli",
-    "packages/agentity-inspector",
-    "packages/agentity-middleware/typescript",
-    "packages/agentity-mcp",
-    "packages/agentity-a2a",
-    "packages/agentity-manifest-gen"
-  ],
   "packageManager": "pnpm@11.1.2",
   "scripts": {
     "build": "pnpm -r build",
