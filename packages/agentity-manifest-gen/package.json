@@ -1,13 +1,15 @@
 {
   "name": "@agentity/manifest-gen",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agentity provider manifest generator",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
     "agentity-manifest-gen": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
@@ -20,5 +22,6 @@
     "typescript": "^5.5",
     "vitest": "^2.0",
     "@types/node": "^22"
-  }
+  },
+  "license": "Apache-2.0"
 }
