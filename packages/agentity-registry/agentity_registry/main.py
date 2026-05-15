@@ -1,20 +1,8 @@
 import hashlib
 import hmac
-import json
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-
-# Load .env if present
-env_path = Path(__file__).resolve().parents[3] / ".env"
-if env_path.exists():
-    with open(env_path) as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip())
-from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,6 +11,19 @@ from fastapi.responses import JSONResponse
 from .models import RevokeRequest, RegisterRequest
 from .stores import BaseStore, InMemoryStore
 from .rate_limit import check_rate_limit
+
+
+def _load_env():
+    p = Path(__file__).resolve().parents[3] / ".env"
+    if p.exists():
+        with open(p) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+
+_load_env()
 
 STORE_TYPE = os.getenv("AGENTITY_STORE", "memory")
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://agentity:agentity@localhost:5432/agentity")
@@ -118,12 +119,7 @@ def create_app() -> FastAPI:
                 except Exception:
                     raise HTTPException(503, detail="Auth service unavailable")
 
-        result = await store.register(req)
-        ts = datetime.now(timezone.utc).isoformat()
-        sig = sign_audit_entry(req.did, "created", ts)
-        if sig:
-            result_dict = {"did": req.did, "status": "active", "updatedAt": ts, "auditSignature": sig}
-        return result
+        return await store.register(req)
 
     @app.get("/did/{did}")
     async def get_aid(did: str):
@@ -140,8 +136,6 @@ def create_app() -> FastAPI:
     @app.post("/revoke")
     async def revoke(req: RevokeRequest):
         result = await store.revoke(req)
-        ts = datetime.now(timezone.utc).isoformat()
-        sig = sign_audit_entry(req.did, "revoked", ts)
         await store.broadcast("revocation", req.did)
         return result
 

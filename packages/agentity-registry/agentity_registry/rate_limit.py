@@ -1,7 +1,6 @@
 """Redis-based rate limiter for Agentity Registry."""
 
 import os
-from datetime import datetime, timezone
 from typing import Optional
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
@@ -24,7 +23,6 @@ async def check_rate_limit(did: str, max_requests: int = 100, window_seconds: in
         current = await r.incr(key)
         if current == 1:
             await r.expire(key, window_seconds)
-        ttl = await r.ttl(key)
         return (current <= max_requests, max(0, max_requests - current))
     except Exception:
         return (True, max_requests)
