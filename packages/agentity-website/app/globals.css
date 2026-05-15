@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "./";
 
 @theme {
   --color-page-white: #ffffff;
@@ -48,9 +49,3 @@ code, pre {
   font-family: var(--font-ibm-plex-mono);
   letter-spacing: -0.021em;
 }
-
-.syntax-rose { color: #984e4d; }
-.syntax-magenta { color: #8844ae; }
-.syntax-sky { color: #5196b3; }
-.syntax-indigo { color: #3b61b0; }
-.syntax-teal { color: #096e72; }
