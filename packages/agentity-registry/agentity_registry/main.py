@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import json
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -11,6 +12,8 @@ from fastapi.responses import JSONResponse
 from .models import RevokeRequest, RegisterRequest
 from .stores import BaseStore, InMemoryStore
 from .rate_limit import check_rate_limit
+
+from typing import Optional
 
 
 def _load_env():
@@ -30,8 +33,10 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://agentity:agentity
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 AUTH_ENABLED = os.getenv("AGENTITY_AUTH_URL", "") != ""
 AUDIT_SIGN_SECRET = os.getenv("AUDIT_SIGN_SECRET", "")
+EVM_ENABLED = os.getenv("AGENTITY_EVM_RPC_URL", "") != "" and os.getenv("AGENTITY_EVM_CONTRACT", "") != ""
 
 store: BaseStore = InMemoryStore()
+evm_publisher: Optional = None
 
 
 async def create_store() -> BaseStore:
@@ -53,8 +58,16 @@ def sign_audit_entry(did: str, event: str, timestamp: str) -> str:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global store
+    global store, evm_publisher
     store = await create_store()
+    if EVM_ENABLED:
+        try:
+            from agentity_evm import EvmPublisher
+            pub = EvmPublisher()
+            if pub.connect():
+                evm_publisher = pub
+        except Exception:
+            pass
     yield
     await store.shutdown()
 
@@ -119,7 +132,19 @@ def create_app() -> FastAPI:
                 except Exception:
                     raise HTTPException(503, detail="Auth service unavailable")
 
-        return await store.register(req)
+        result = await store.register(req)
+        await store.broadcast("created", req.did)
+        if evm_publisher:
+            import hashlib as hp
+            from base64 import urlsafe_b64decode
+            try:
+                aid = json.loads(req.aid_json)
+                pk = aid.get("publicKey", {}).get("value", "")
+                fp = hp.sha256(urlsafe_b64decode(pk + "==")).hexdigest()
+                evm_publisher.register(req.did, fp, req.owner_did)
+            except Exception:
+                pass
+        return result
 
     @app.get("/did/{did}")
     async def get_aid(did: str):
@@ -137,7 +162,24 @@ def create_app() -> FastAPI:
     async def revoke(req: RevokeRequest):
         result = await store.revoke(req)
         await store.broadcast("revocation", req.did)
+        if evm_publisher:
+            try:
+                evm_publisher.revoke(req.did)
+            except Exception:
+                pass
         return result
+
+    @app.get("/audit")
+    async def get_all_audit():
+        entries = await store.get_all_audit()
+        if AUDIT_SIGN_SECRET:
+            result = []
+            for e in entries:
+                ts = e.timestamp.isoformat() if hasattr(e.timestamp, 'isoformat') else str(e.timestamp)
+                sig = sign_audit_entry(e.did, e.event, ts)
+                result.append({**e.model_dump(), "signature": sig})
+            return result
+        return entries
 
     @app.get("/audit/{did}")
     async def get_audit(did: str):

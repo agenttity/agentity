@@ -31,6 +31,10 @@ class BaseStore(ABC):
         ...
 
     @abstractmethod
+    async def get_all_audit(self) -> list[AuditEntry]:
+        ...
+
+    @abstractmethod
     async def list_agents(self) -> list[AgentInfo]:
         ...
 
@@ -117,6 +121,9 @@ class InMemoryStore(BaseStore):
 
     async def get_audit(self, did: str) -> list[AuditEntry]:
         return [e for e in self._audit if e.did == did]
+
+    async def get_all_audit(self) -> list[AuditEntry]:
+        return list(self._audit)
 
     async def list_agents(self) -> list[AgentInfo]:
         result = []

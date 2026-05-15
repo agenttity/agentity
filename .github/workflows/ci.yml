@@ -30,12 +30,14 @@ jobs:
           pip install -e packages/agentity-mcp[dev]
           pip install -e packages/agentity-a2a[dev]
           pip install -e packages/agentity-cli[dev]
+          pip install -e packages/agentity-evm[dev]
           pytest packages/agentity-sdk-python/tests
           pytest packages/agentity-registry/agentity_registry/tests
           pytest packages/agentity-middleware/python/tests
           pytest packages/agentity-mcp/tests
           pytest packages/agentity-a2a/tests
           pytest packages/agentity-cli/tests
+          pytest packages/agentity-evm/agentity_evm/tests
 
   test-ts:
     runs-on: ubuntu-latest

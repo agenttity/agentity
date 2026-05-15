@@ -125,6 +125,11 @@ class PostgresStore(BaseStore):
             )
         return [AuditEntry(**dict(r)) for r in rows]
 
+    async def get_all_audit(self) -> list[AuditEntry]:
+        async with self._pg.acquire() as conn:
+            rows = await conn.fetch("SELECT did, event, timestamp, actor, reason FROM audit_log ORDER BY timestamp DESC LIMIT 500")
+        return [AuditEntry(**dict(r)) for r in rows]
+
     async def list_agents(self) -> list[AgentInfo]:
         async with self._pg.acquire() as conn:
             rows = await conn.fetch(

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentity-evm"
+version = "0.1.0"
+description = "Agentity EVM bridge — publish DID events on-chain and verify cross-registry"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "web3>=7",
+    "pydantic>=2",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agentity_evm*"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.4"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
