@@ -1,4 +1,4 @@
-# Agentity Protocol
+# Protocole Agentity
 
 | 🇬🇧 [English](README.md) | 🇫🇷 [Français](README.fr.md) |
 |---|---|
@@ -8,9 +8,9 @@
 [![PyPI](https://img.shields.io/pypi/v/agentity-sdk-python)](https://pypi.org/project/agentity-sdk-python/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/agenttity/agentity/blob/main/LICENSE)
 
-**Open source cryptographic identity protocol for AI agents.**
+**Protocole open source d'identité cryptographique pour agents IA.**
 
-Every AI agent receives a W3C-compatible DID (`did:agentity`), a signed Agent Identity Document (AID) with Ed25519 keys, and a scope system validated against service provider manifests. Delegation chains, revocation cascades, anti-replay nonces, OIDC owner verification, rate limiting, key rotation, and signed audit logs — designed for LangChain, CrewAI, Vercel AI SDK, MCP, A2A, and any HTTP infrastructure.
+Chaque agent IA reçoit un DID compatible W3C (`did:agentity`), un document d'identité signé (AID) avec clés Ed25519, et un système de scopes validés contre les manifestes des fournisseurs de services. Chaînes de délégation, révocations en cascade, anti-replay, vérification du propriétaire via OIDC, rate limiting, rotation de clés et logs d'audit signés — conçu pour LangChain, CrewAI, Vercel AI SDK, MCP, A2A et toute infrastructure HTTP.
 
 ```
 did:agentity:agent:7Xj3mK9pL2nQ8vRtYwZb4cFdHsNaEgUi
@@ -22,82 +22,82 @@ did:agentity:agent:7Xj3mK9pL2nQ8vRtYwZb4cFdHsNaEgUi
 
 ```
 ═══════════════════════════════════════════════════════════════════
-                     USER INTERFACES
+                     INTERFACES UTILISATEUR
 ═══════════════════════════════════════════════════════════════════
 
   ┌──────────────────────┐    ┌──────────────────────────────────┐
   │     agentity-cli     │    │      agentity-inspector          │
-  │  create · inspect    │    │   Next.js dashboard · WebSocket  │
-  │  verify · sign       │    │   agent list · live revocations  │
-  │  manifest            │    │   scope explorer                 │
+  │  create · inspect    │    │   Dashboard Next.js · WebSocket  │
+  │  verify · sign       │    │   liste agents · révocations live│
+  │  manifest            │    │   explorateur de scopes          │
   └──────────┬───────────┘    └──────────────┬───────────────────┘
              │                               │
              │          HTTP / WS            │
              ▼                               ▼
 ═══════════════════════════════════════════════════════════════════
-                     SERVICE LAYER
+                     COUCHE SERVICE
 ═══════════════════════════════════════════════════════════════════
 
   ┌──────────────────────────────────────────────────────────────┐
   │                   agentity-registry                         │
   │   FastAPI · PostgreSQL · Redis                               │
   │   POST /register · GET /did/{did} · POST /revoke · WS /ws   │
-  │   OIDC auth (/auth/login) · rate limiting · signed audit log │
+  │   Auth OIDC · rate limiting · logs d'audit signés            │
   └───────┬────────────────────────────────────┬─────────────────┘
           │                                    │
-          │   HTTP + Agentity-Token header     │
+          │   HTTP + en-tête Agentity-Token    │
           ▼                                    ▼
   ┌─────────────────┐                ┌──────────────────────────┐
   │  agentity-sdk   │                │  agentity-middleware     │
   │  Python / TS    │◄──────────────►│  FastAPI / Express       │
-  │                 │                │  automatic token verify  │
+  │                 │                │  vérification automatique │
   │  + agentity-mcp │                │                          │
   │  + agentity-a2a │                │                          │
   +  + agentity-auth│                │                          │
   └────────┬────────┘                └──────────────────────────┘
            │
-           │    builds on
+           │    s'appuie sur
            ▼
 ═══════════════════════════════════════════════════════════════════
-                     IDENTITY LAYER
+                     COUCHE IDENTITÉ
 ═══════════════════════════════════════════════════════════════════
 
   ┌──────────────────────────────────────────────────────────────┐
   │                   agentity-sdk                               │
   │  AgentKeyPair · AgentIdentity · RequestSigner · RequestVer.  │
-  │  ProviderManifest · Scope matching · Delegation chain        │
-  │  Key rotation · LangChain mixin · Vercel AI SDK              │
+  │  ProviderManifest · Scope matching · Chaîne de délégation    │
+  │  Rotation de clés · Intégration LangChain · Vercel AI SDK    │
   └────────┬──────────────────────────────────┬──────────────────┘
            │                                  │
            ▼                                  ▼
 ═══════════════════════════════════════════════════════════════════
-                      CORE LAYER
+                      COUCHE CŒUR
 ═══════════════════════════════════════════════════════════════════
 
   ┌──────────────────────────────────────────────────────────────┐
   │                   agentity-core (Rust)                       │
-  │  Ed25519 keypairs · SHA-256 fingerprints · base58 DIDs       │
-  │  AgentIdentityDocument · Proof signing/verification          │
-  │  Token encoding · Scope wildcard matching                    │
+  │  Paires de clés Ed25519 · Empreintes SHA-256 · DIDs base58   │
+  │  Document d'identité agent · Signature et vérification       │
+  │  Encodage de token · Filtrage de scopes avec wildcards       │
   └──────────────────────────────────────────────────────────────┘
 ```
 
-### Request flow
+### Flux d'une requête
 
 ```
-Agent SDK             Middleware              Registry
+Agent SDK             Middleware              Registre
     │                     │                      │
-    │  1. Sign request    │                      │
-    │  with Agent-Token   │                      │
+    │  1. Signe requête   │                      │
+    │  avec Agent-Token   │                      │
     │────────────────────►│                      │
-    │                     │  2. Verify token     │
+    │                     │  2. Vérifie token    │
     │                     │  + nonce + timestamp │
     │                     │──────────────────────►
-    │                     │  3. Check status     │
+    │                     │  3. Vérifie statut   │
     │                     │◄──────────────────────│
-    │                     │  4. Valid: forward   │
+    │                     │  4. Valide : transmet│
     │                     │                      │
-    │  5. Response        │                      │
+    │  5. Réponse         │                      │
     │◄────────────────────│                      │
 ```
 
@@ -105,39 +105,39 @@ Agent SDK             Middleware              Registry
 
 ## Packages
 
-| Package | Language | Description |
-|---------|----------|-------------|
-| `agentity-core` | Rust | Ed25519 keys, DID generation, AID signing/verification, scope matching |
-| `agentity-spec` | Markdown | RFC protocol specification (SPEC.md) |
-| `agentity-sdk-python` | Python | AgentKeyPair, AgentIdentity, RequestSigner, LangChain/CrewAI integration, key rotation |
-| `agentity-sdk-ts` | TypeScript | Full parity SDK for Node.js/Next.js, Vercel AI SDK compatible, key rotation |
-| `agentity-registry` | Python | FastAPI REST registry: register, lookup, revoke (cascade), audit log, WebSocket, rate limiting |
-| `agentity-auth` | Python | OIDC authentication: login via Google, GitHub, Apple, Microsoft |
-| `agentity-middleware` | Python/TS | FastAPI middleware + Express middleware (automatic token verification) |
-| `agentity-cli` | Python | CLI: `create`, `inspect`, `verify`, `sign`, `manifest` |
-| `agentity-mcp` | Python | MCP Anthropic protocol plugin (signs tool calls) |
-| `agentity-a2a` | Python | A2A Google protocol plugin (signs agent-to-agent requests) |
-| `agentity-inspector` | TypeScript | Next.js dashboard — real-time agent list + WebSocket revocations |
-| `agentity-manifest-gen` | TypeScript | Provider manifest JSON generator |
-
----
-
-## Security features
-
-| Feature | Package | Description |
+| Package | Langage | Description |
 |---------|---------|-------------|
-| **OIDC auth** | `agentity-auth` | Login via Google/GitHub/Apple/Microsoft — verified `owner_did` |
-| **Rate limiting** | `agentity-registry` | Redis-based rate limit per DID (configurable window/max) |
-| **Key rotation** | SDKs | `rotate()` generates new keypair, `version+1`, links previous AID |
-| **Signed audit log** | `agentity-registry` | HMAC-SHA256 signature on each audit entry, verifiable via `/audit/{did}/verify` |
-| **Anti-replay** | SDKs | UUID nonce + 5 min timestamp window |
-| **Delegation chain** | SDKs | Max 10 levels, child scopes ⊆ parent scopes, cascade revocation |
+| `agentity-core` | Rust | Clés Ed25519, génération DID, signature/vérification AID, matching de scopes |
+| `agentity-spec` | Markdown | Spécification RFC du protocole (SPEC.md) |
+| `agentity-sdk-python` | Python | AgentKeyPair, AgentIdentity, RequestSigner, Intégration LangChain/CrewAI, rotation de clés |
+| `agentity-sdk-ts` | TypeScript | SDK complet pour Node.js/Next.js, compatible Vercel AI SDK, rotation de clés |
+| `agentity-registry` | Python | API REST FastAPI : enregistrement, lookup, révocation (cascade), logs d'audit, WebSocket, rate limiting |
+| `agentity-auth` | Python | Authentification OIDC : connexion via Google, GitHub, Apple, Microsoft |
+| `agentity-middleware` | Python/TS | Middleware FastAPI + Express (vérification automatique des tokens) |
+| `agentity-cli` | Python | CLI : `create`, `inspect`, `verify`, `sign`, `manifest` |
+| `agentity-mcp` | Python | Plugin protocole MCP Anthropic (signe les appels d'outils) |
+| `agentity-a2a` | Python | Plugin protocole A2A Google (signe les requêtes agent-à-agent) |
+| `agentity-inspector` | TypeScript | Dashboard Next.js — liste des agents en temps réel + révocations WebSocket |
+| `agentity-manifest-gen` | TypeScript | Générateur de manifeste JSON pour fournisseur |
 
 ---
 
-## Quick Start
+## Fonctionnalités de sécurité
 
-### 1. Install
+| Fonctionnalité | Package | Description |
+|---|---|---|
+| **Auth OIDC** | `agentity-auth` | Connexion via Google/GitHub/Apple/Microsoft — `owner_did` vérifié |
+| **Rate limiting** | `agentity-registry` | Limitation par DID basée sur Redis (fenêtre configurable) |
+| **Rotation de clés** | SDKs | `rotate()` génère une nouvelle paire, `version+1`, référence l'AID précédent |
+| **Logs d'audit signés** | `agentity-registry` | Signature HMAC-SHA256 sur chaque entrée, vérifiable via `/audit/{did}/verify` |
+| **Anti-replay** | SDKs | Nonce UUID + fenêtre de 5 min |
+| **Chaîne de délégation** | SDKs | Max 10 niveaux, scopes enfant ⊆ scopes parent, révocation en cascade |
+
+---
+
+## Démarrage rapide
+
+### 1. Installation
 
 ```bash
 # Python
@@ -147,7 +147,7 @@ pip install agentity-sdk-python agentity-registry agentity-auth
 pnpm add @agentity/sdk
 ```
 
-### 2. Create an agent identity
+### 2. Créer une identité agent
 
 ```python
 from agentity_sdk import AgentKeyPair
@@ -158,20 +158,11 @@ aid = kp.create_identity(
     scopes=["stripe:payments:read", "calendar:events:write"],
     ttl_days=30,
 )
-print(f"DID: {aid.did}")
-print(f"Signature valid: {aid.verify_signature()}")
+print(f"DID : {aid.did}")
+print(f"Signature valide : {aid.verify_signature()}")
 ```
 
-```typescript
-import { AgentKeyPair, createIdentity } from '@agentity/sdk';
-
-const kp = await AgentKeyPair.generate();
-const aid = await createIdentity(kp, 'did:agentity:human:alice',
-  ['stripe:payments:read'], 30);
-console.log(`DID: ${aid.did}`);
-```
-
-### 3. Sign a request
+### 3. Signer une requête
 
 ```python
 from agentity_sdk import RequestSigner
@@ -185,7 +176,7 @@ headers = signer.sign_request("GET", "/api/v1/payments")
 # }
 ```
 
-### 4. Verify on the server side
+### 4. Vérifier côté serveur
 
 ```python
 from agentity_sdk import RequestVerifier
@@ -194,10 +185,10 @@ verifier = RequestVerifier()
 used_nonces = set()
 aid = verifier.verify_request(headers, "GET", "/api/v1/payments",
     used_nonces=used_nonces)
-# Raises PermissionError on invalid/malformed/replayed requests
+# Lève PermissionError si la requête est invalide, malformée ou rejouée
 ```
 
-### 5. Or use the middleware (automatic)
+### 5. Ou utiliser le middleware (automatique)
 
 ```python
 # FastAPI
@@ -214,19 +205,12 @@ import { agentityMiddleware } from '@agentity/middleware-express';
 app.use(agentityMiddleware({ registryUrl: 'http://localhost:8000' }));
 ```
 
-### 6. Rotate keys
+### 6. Rotation de clés
 
 ```python
-# Python
 new_aid = kp.rotate(aid, ttl_days=90)
-print(f"New version: {new_aid.version}")  # 2
-print(f"Previous AID: {new_aid.previousAid}")
-```
-
-```typescript
-// TypeScript
-import { rotateIdentity } from '@agentity/sdk';
-const newAid = await rotateIdentity(aid, kp);
+print(f"Nouvelle version : {new_aid.version}")  # 2
+print(f"AID précédent : {new_aid.previousAid}")
 ```
 
 ---
@@ -234,95 +218,74 @@ const newAid = await rotateIdentity(aid, kp);
 ## CLI
 
 ```bash
-# Create a new agent identity
+# Créer une nouvelle identité agent
 python -m agentity_cli create --owner "did:agentity:human:alice" \
   --scope "api:read" --scope "api:write" --output agent.json
 
-# Inspect an AID file
+# Inspecter un fichier AID
 python -m agentity_cli inspect agent.json
 
-# Verify an AID signature
+# Vérifier une signature AID
 python -m agentity_cli verify agent.json
 
-# Sign a request
+# Signer une requête
 python -m agentity_cli sign --key agent.json \
   --url https://api.example.com/data --method GET
 
-# Generate a provider manifest
-python -m agentity_cli manifest --name "My API" --scopes "data:read,data:write"
+# Générer un manifeste de fournisseur
+python -m agentity_cli manifest --name "Mon API" --scopes "data:read,data:write"
 ```
 
 ---
 
-## Registry API
+## API du Registre
 
 ```bash
-# Start (in-memory, no dependencies)
+# Démarrer (mémoire, aucune dépendance)
 uvicorn agentity_registry.main:app --port 8000
 
-# Start with OIDC auth (Google + GitHub)
-cp .env.example .env   # fill in credentials
+# Démarrer avec auth OIDC (Google + GitHub)
+cp .env.example .env   # remplir les identifiants
 uvicorn agentity_registry.main:app --port 8765
 
-# Start (PostgreSQL + Redis)
+# Démarrer (PostgreSQL + Redis)
 AGENTITY_STORE=postgres docker compose up -d
 ```
 
-### Endpoints
+### Points d'accès
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check + active store type + auth status |
-| `GET` | `/auth/login/{provider}` | OIDC login (google, github, apple, microsoft) |
-| `GET` | `/auth/callback/{provider}` | OIDC callback |
-| `GET` | `/auth/session/{token}` | Get verified owner session |
-| `POST` | `/register` | Register an AID |
-| `GET` | `/did/{did}` | Get full AID document |
-| `GET` | `/did/{did}/status` | Get AID status (active/revoked/expired) |
-| `POST` | `/revoke` | Revoke an AID (optional cascade) |
-| `GET` | `/audit/{did}` | Get signed audit log for a DID |
-| `GET` | `/audit/{did}/verify` | Verify audit entry signature |
-| `GET` | `/agents` | List all registered agents |
-| `WS` | `/ws` | WebSocket — real-time revocation events |
+| Méthode | Chemin | Description |
+|---------|--------|-------------|
+| `GET` | `/health` | Vérification + type de stockage + statut auth |
+| `GET` | `/auth/login/{provider}` | Connexion OIDC (google, github, apple, microsoft) |
+| `GET` | `/auth/callback/{provider}` | Retour OIDC |
+| `GET` | `/auth/session/{token}` | Récupérer une session propriétaire vérifiée |
+| `POST` | `/register` | Enregistrer un AID |
+| `GET` | `/did/{did}` | Récupérer le document AID complet |
+| `GET` | `/did/{did}/status` | Statut de l'AID (actif/révoqué/expiré) |
+| `POST` | `/revoke` | Révoquer un AID (cascade optionnelle) |
+| `GET` | `/audit/{did}` | Logs d'audit signés pour un DID |
+| `GET` | `/audit/{did}/verify` | Vérifier la signature d'une entrée d'audit |
+| `GET` | `/agents` | Lister tous les agents enregistrés |
+| `WS` | `/ws` | WebSocket — événements de révocation en temps réel |
 
-Headers rate limiting retourne `X-RateLimit-Remaining` sur chaque réponse.
+### Modes de stockage
 
-### Stack modes
-
-| `AGENTITY_STORE` | Storage | Dependencies |
+| `AGENTITY_STORE` | Stockage | Dépendances |
 |---|---|---|
-| `memory` (default) | In-memory dict | None |
+| `memory` (défaut) | Dictionnaire en mémoire | Aucune |
 | `postgres` | PostgreSQL + Redis | `docker compose up` |
 
 ---
 
-## Architecture decisions
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Crypto | Ed25519 | Fast, short keys (32 B), W3C standard |
-| DID method | `did:agentity` | W3C compatible, self-verifying fingerprint |
-| Token format | `<base64(AID)>.<base64(sig)>` | Self-contained, no lookup needed |
-| Anti-replay | Nonce + timestamp (5 min window) | Stateless client, Redis TTL server-side |
-| OIDC | Google, GitHub, Apple, MS | Verified owner_human_ → trust chain |
-| Rate limiting | Redis per-DID | Configurable window + max requests |
-| Audit log | HMAC-SHA256 signed | Non-repudiation, verifiable |
-| Key rotation | `version+1`, `previousAid` link | Compromised key mitigation |
-| Core language | Rust | Max performance, WASM-ready for edge |
-| SDK languages | Python + TypeScript | LangChain/CrewAI + Vercel AI/Next.js ecosystems |
-| Registry store | Pluggable (memory → postgres) | Dev to production without code changes |
-| License | Apache 2.0 | Patent protection, commercial-friendly |
-
----
-
-## Development
+## Développement
 
 ```bash
-# Clone
+# Cloner
 git clone https://github.com/agenttity/agentity.git
 cd agentity
 
-# Rust core
+# Rust
 . "$HOME/.cargo/env"
 cargo test --workspace                            # 17 tests
 
@@ -336,7 +299,7 @@ pip install -e packages/agentity-cli[dev]
 pip install -e packages/agentity-mcp[dev]
 pip install -e packages/agentity-a2a[dev]
 
-pytest packages/agentity-sdk-python/tests          # 10 tests (incl. rotation)
+pytest packages/agentity-sdk-python/tests          # 10 tests
 pytest packages/agentity-registry/agentity_registry/tests  # 6 tests
 pytest packages/agentity-auth/agentity_auth/tests  # 5 tests
 pytest packages/agentity-middleware/python/tests   # 6 tests
@@ -347,14 +310,14 @@ pytest packages/agentity-cli/tests                 # 4 tests
 # TypeScript
 pnpm install --ignore-scripts
 pnpm build
-pnpm test                                          # 19 TS tests total
+pnpm test                                          # 19 tests TS
 
-# All at once
-cargo test --workspace && pnpm test && pytest ...  # 74 tests total
+# Tout en une commande
+cargo test --workspace && pnpm test && pytest ...  # 74 tests au total
 ```
 
 ---
 
-## License
+## Licence
 
-Apache 2.0 — see [LICENSE](LICENSE).
+Apache 2.0 — voir [LICENSE](LICENSE).
