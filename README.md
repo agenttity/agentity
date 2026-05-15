@@ -5,9 +5,12 @@
 [![PyPI](https://img.shields.io/pypi/v/agentity-sdk-python)](https://pypi.org/project/agentity-sdk-python/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/agenttity/agentity/blob/main/LICENSE)
 
-**Open source cryptographic identity protocol for AI agents.**
+**EN** — Open source cryptographic identity protocol for AI agents.  
+**FR** — Protocole open source d'identité cryptographique pour agents IA.
 
 Every AI agent receives a W3C-compatible DID (`did:agentity`), a signed Agent Identity Document (AID) with Ed25519 keys, and a scope system validated against service provider manifests. Delegation chains, revocation cascades, anti-replay nonces, OIDC owner verification, rate limiting, key rotation, and signed audit logs — designed for LangChain, CrewAI, Vercel AI SDK, MCP, A2A, and any HTTP infrastructure.
+
+> **FR** — Chaque agent IA reçoit un DID compatible W3C, un document d'identité signé (AID) avec clés Ed25519, et un système de scopes validés contre les manifestes des fournisseurs de services. Chaînes de délégation, révocations en cascade, anti-replay, vérification du propriétaire via OIDC, rate limiting, rotation de clés et logs d'audit signés — conçu pour LangChain, CrewAI, Vercel AI SDK, MCP, A2A et toute infrastructure HTTP.
 
 ```
 did:agentity:agent:7Xj3mK9pL2nQ8vRtYwZb4cFdHsNaEgUi
