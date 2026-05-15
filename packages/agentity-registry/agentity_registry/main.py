@@ -3,6 +3,17 @@ import hmac
 import json
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+# Load .env if present
+env_path = Path(__file__).resolve().parents[3] / ".env"
+if env_path.exists():
+    with open(env_path) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket
