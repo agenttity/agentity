@@ -28,6 +28,7 @@ export interface AgentIdentityJson {
   expires: string;
   owner: OwnerRef;
   parent?: string;
+  previousAid?: string;
   delegationDepth: number;
   model?: ModelInfo;
   scope: string[];
@@ -44,6 +45,7 @@ export class AgentIdentity {
   expires: Date;
   owner: OwnerRef;
   parent?: string;
+  previousAid?: string;
   delegationDepth: number;
   model?: ModelInfo;
   scope: string[];
@@ -101,6 +103,39 @@ export class AgentIdentity {
     const json = atob(parts[0]);
     return new AgentIdentity(JSON.parse(json));
   }
+}
+
+export async function rotateIdentity(
+  previousAid: AgentIdentity,
+  kp: AgentKeyPair,
+): Promise<AgentIdentity> {
+  const newKp = await AgentKeyPair.generate();
+  const newDid = AgentDid.fromKeypair(newKp);
+  const now = new Date();
+  const expires = new Date(now.getTime() + 90 * 86400000);
+  const oldVersion = parseInt(previousAid.version);
+  const newVersion = (oldVersion + 1).toString();
+
+  const aid = new AgentIdentity({
+    did: newDid.asStr(),
+    version: newVersion,
+    specVersion: previousAid.specVersion,
+    created: now.toISOString(),
+    expires: expires.toISOString(),
+    owner: previousAid.owner,
+    parent: previousAid.parent,
+    previousAid: previousAid.did,
+    delegationDepth: previousAid.delegationDepth,
+    model: previousAid.model,
+    scope: [...previousAid.scope],
+    publicKey: { type: 'Ed25519VerificationKey2020', value: newKp.publicKeyB64 },
+    status: 'active',
+  });
+
+  const payload = `${aid.did}:${aid.version}:${aid.created.toISOString()}:${aid.expires.toISOString()}:${[...previousAid.scope].sort().join(',')}:${previousAid.owner.did}`;
+  const proofValue = await newKp.sign(new TextEncoder().encode(payload));
+  aid.proof = { type: 'Ed25519Signature2020', created: now.toISOString(), proofValue };
+  return aid;
 }
 
 export async function createIdentity(

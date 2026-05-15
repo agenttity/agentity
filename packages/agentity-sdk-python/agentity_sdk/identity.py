@@ -47,6 +47,7 @@ class AgentIdentity(BaseModel):
     expires: datetime
     owner: OwnerRef
     parent: Optional[str] = None
+    previousAid: Optional[str] = None
     delegationDepth: int = 0
     model: Optional[ModelInfo] = None
     scope: list[str]
@@ -186,6 +187,32 @@ class AgentKeyPair:
                        method: str, path: str, body_hash: Optional[str], sig_b64: str) -> bool:
         payload = f"{did}:{nonce}:{timestamp}:{method}:{path}:{body_hash or ''}"
         return AgentKeyPair.verify(public_key_b64, payload.encode(), sig_b64)
+
+    def rotate(self, previous_aid: "AgentIdentity", ttl_days: int = 90) -> "AgentIdentity":
+        """Generate a new keypair and create a new AID with version+1 referencing the old one."""
+        new_kp = AgentKeyPair()
+        new_did = AgentDid.from_keypair(new_kp)
+        now = datetime.now(timezone.utc)
+        expires = now + timedelta(days=ttl_days)
+        old_version = int(previous_aid.version)
+        new_aid = AgentIdentity(
+            did=new_did.as_str(),
+            version=str(old_version + 1),
+            specVersion=previous_aid.specVersion,
+            created=now,
+            expires=expires,
+            owner=previous_aid.owner,
+            parent=previous_aid.parent,
+            delegationDepth=previous_aid.delegationDepth,
+            model=previous_aid.model,
+            scope=previous_aid.scope.copy(),
+            publicKey={"type": "Ed25519VerificationKey2020", "value": new_kp.public_key_b64()},
+            previousAid=previous_aid.did,
+        )
+        payload = new_aid._signing_payload()
+        proof_value = new_kp.sign(payload)
+        new_aid.proof = Proof(created=now, proofValue=proof_value)
+        return new_aid
 
     def create_identity(self, owner_did: str, scopes: list[str],
                         ttl_days: int = 30, parent: Optional[str] = None,

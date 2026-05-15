@@ -73,3 +73,17 @@ def test_replay_detection():
     verifier.verify_request(headers, "GET", "/api/data", used_nonces=used)
     with pytest.raises(PermissionError, match="replay"):
         verifier.verify_request(headers, "GET", "/api/data", used_nonces=used)
+
+
+def test_key_rotation():
+    kp = AgentKeyPair()
+    aid = kp.create_identity("did:agentity:human:adam", ["svc:read"], 30)
+    assert aid.version == "1"
+
+    new_aid = kp.rotate(aid, ttl_days=90)
+    assert new_aid.version == "2"
+    assert new_aid.previousAid == aid.did
+    assert new_aid.owner.did == aid.owner.did
+    assert new_aid.scope == aid.scope
+    assert new_aid.verify_signature()
+    assert not new_aid.is_expired()
