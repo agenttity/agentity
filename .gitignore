@@ -11,3 +11,6 @@ __pycache__/
 
 # Build artefacts
 **/dist/
+
+# Local agent instructions (not committed)
+AGENTS.md
