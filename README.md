@@ -3,7 +3,7 @@
 [![CI](https://github.com/agenttity/agentity/actions/workflows/ci.yml/badge.svg)](https://github.com/agenttity/agentity/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@agentity/sdk)](https://www.npmjs.com/package/@agentity/sdk)
 [![PyPI](https://img.shields.io/pypi/v/agentity-sdk-python)](https://pypi.org/project/agentity-sdk-python/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/agenttity/agentity/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/agenttity/agentity/blob/main/LICENSE)
 
 **Open source cryptographic identity protocol for AI agents.**
 
@@ -259,7 +259,7 @@ docker compose up -d
 | Core language | Rust | Max performance, WASM-ready for edge |
 | SDK languages | Python + TypeScript | LangChain/CrewAI + Vercel AI/Next.js ecosystems |
 | Registry store | Pluggable (memory → postgres) | Dev to production without code changes |
-| License | MIT | Max permissive, no restrictions |
+| License | Apache 2.0 | Patent protection, commercial-friendly |
 
 ---
 
@@ -302,4 +302,4 @@ cargo test --workspace && pnpm test && pytest ... # 69 tests total
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE).

@@ -17,7 +17,7 @@
 - `agentity-registry` — PostgreSQL + Redis store, `AGENTITY_STORE` env var, Docker Compose
 - CI/CD — GitHub Actions workflows for Rust + Python + TypeScript
 - E2E examples in Python and TypeScript
-- License: MIT
+- License: Apache 2.0
 
 ### Published
 - npm: `@agentity/sdk`, `@agentity/middleware-express`, `@agentity/manifest-gen`
