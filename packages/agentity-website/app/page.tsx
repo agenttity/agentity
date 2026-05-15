@@ -55,15 +55,7 @@ function Hero() {
 }
 
 function CodeCard() {
-  return (
-    <div className="bg-page-white rounded-lg shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_rgba(0,0,0,0.06)] p-6 border border-border-ash">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="w-3 h-3 rounded-full bg-red-400" />
-        <span className="w-3 h-3 rounded-full bg-yellow-400" />
-        <span className="w-3 h-3 rounded-full bg-green-400" />
-      </div>
-      <pre className="font-ibm-plex-mono text-sm leading-relaxed">
-<code>{`<span class="syntax-rose">from</span> <span class="syntax-magenta">agentity_sdk</span> <span class="syntax-rose">import</span> <span class="syntax-magenta">AgentKeyPair</span>
+  const html = `<span class="syntax-rose">from</span> <span class="syntax-magenta">agentity_sdk</span> <span class="syntax-rose">import</span> <span class="syntax-magenta">AgentKeyPair</span>
 
 <span class="syntax-magenta">kp</span> <span class="syntax-rose">=</span> <span class="syntax-indigo">AgentKeyPair</span>()
 <span class="syntax-magenta">aid</span> <span class="syntax-rose">=</span> <span class="syntax-indigo">kp</span>.<span class="syntax-magenta">create_identity</span>(
@@ -71,7 +63,16 @@ function CodeCard() {
     <span class="syntax-teal">scopes</span><span class="syntax-rose">=[</span><span class="syntax-indigo">"payments:read"</span><span class="syntax-rose">],</span>
 )
 
-<span class="syntax-sky"># DID: did:agentity:agent:7Xj3mK...`}</code>
+<span class="syntax-sky"># DID: did:agentity:agent:7Xj3mK...</span>`;
+  return (
+    <div className="bg-page-white rounded-lg shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_rgba(0,0,0,0.06)] p-6 border border-border-ash">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="w-3 h-3 rounded-full bg-red-400" />
+        <span className="w-3 h-3 rounded-full bg-yellow-400" />
+        <span className="w-3 h-3 rounded-full bg-green-400" />
+      </div>
+      <pre className="font-ibm-plex-mono text-sm leading-relaxed overflow-x-auto whitespace-pre">
+        <code dangerouslySetInnerHTML={{ __html: html }} />
       </pre>
     </div>
   );
