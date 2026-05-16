@@ -6,20 +6,26 @@ export default function Home() {
       <ProblemSolution />
       <HowItWorks />
       <Features />
+      <PackagesSection />
       <QuickStart />
       <Endpoints />
+      <DocsSection />
       <Footer />
     </main>
   );
 }
 
-import { GitBranch, Package, DownloadSimple } from '@phosphor-icons/react/dist/ssr';
+import { GitBranch, Package, DownloadSimple, BookOpenText, PuzzlePiece, Terminal, Cloud, FileCode, Cube, SealCheck, Plugs, PlugsConnected, Lockers, ChartBar, CoinVertical } from '@phosphor-icons/react/dist/ssr';
 
 function Nav() {
   return (
     <nav className="flex items-center justify-between py-4 border-b border-border-ash">
       <span className="font-ibm-plex-mono text-sm font-semibold text-text-jet">Agentity</span>
       <div className="flex items-center gap-3">
+        <a href="/docs" className="flex items-center gap-1.5 text-text-graphite text-caption font-rubik-variable font-medium px-3 py-1.5 rounded-md border border-border-ash hover:border-primary-violet hover:text-primary-violet transition-colors">
+          <BookOpenText size={16} />
+          Docs
+        </a>
         <a href="https://github.com/agenttity/agentity" className="flex items-center gap-1.5 text-text-graphite text-caption font-rubik-variable font-medium px-3 py-1.5 rounded-md border border-border-ash hover:border-primary-violet hover:text-primary-violet transition-colors">
           <GitBranch size={16} />
           GitHub
@@ -197,6 +203,59 @@ function Features() {
   );
 }
 
+function PackagesSection() {
+  const packages = [
+    { name: 'agentity-core', lang: 'Rust', type: 'library', icon: Lockers, desc: 'Ed25519 keys, DID, AID, scope matching' },
+    { name: 'agentity-sdk-python', lang: 'Python', type: 'library', icon: Cube, desc: 'AgentKeyPair, RequestSigner, LangChain, rotation', pub: 'PyPI' },
+    { name: 'agentity-sdk-ts', lang: 'TypeScript', type: 'library', icon: Cube, desc: 'Full parity SDK for Node.js/Next.js', pub: 'npm' },
+    { name: 'agentity-registry', lang: 'Python', type: 'service', icon: Cloud, desc: 'FastAPI: register, lookup, revoke, audit, WS', pub: 'PyPI' },
+    { name: 'agentity-auth', lang: 'Python', type: 'plugin', icon: SealCheck, desc: 'OIDC: Google, GitHub, Apple, Microsoft', pub: 'PyPI' },
+    { name: 'agentity-cli', lang: 'Python', type: 'cli', icon: Terminal, desc: 'create, inspect, verify, sign, manifest', pub: 'PyPI' },
+    { name: 'agentity-middleware-python', lang: 'Python', type: 'middleware', icon: Plugs, desc: 'FastAPI automatic token verification', pub: 'PyPI' },
+    { name: 'agentity-middleware-express', lang: 'TS', type: 'middleware', icon: PlugsConnected, desc: 'Express automatic token verification', pub: 'npm' },
+    { name: 'agentity-mcp', lang: 'Python', type: 'plugin', icon: PuzzlePiece, desc: 'MCP Anthropic protocol plugin', pub: 'PyPI' },
+    { name: 'agentity-a2a', lang: 'Python', type: 'plugin', icon: FileCode, desc: 'A2A Google agent-to-agent protocol', pub: 'PyPI' },
+    { name: 'agentity-inspector', lang: 'TypeScript', type: 'ui', icon: ChartBar, desc: 'Next.js dashboard with WS live revocations' },
+    { name: 'agentity-manifest-gen', lang: 'TypeScript', type: 'cli', icon: FileCode, desc: 'Provider manifest JSON generator', pub: 'npm' },
+    { name: 'agentity-evm', lang: 'Python+Sol', type: 'bridge', icon: CoinVertical, desc: 'EVM cross-registry DID bridge' },
+  ];
+  return (
+    <section className="py-24">
+      <p className="text-text-fog text-caption font-semibold mb-3 uppercase tracking-wide text-center">Packages</p>
+      <h2 className="font-ibm-plex-mono font-semibold text-heading text-text-jet mb-4 text-center">13 packages, 3 languages</h2>
+      <p className="text-text-slate text-caption text-center mb-10 max-w-md mx-auto leading-relaxed">
+        Monorepo with Rust core, Python and TypeScript SDKs, middleware for FastAPI and Express,
+        CLI tool, protocol plugins, dashboard, and EVM bridge.
+      </p>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {packages.map((p) => {
+          const Icon = p.icon;
+          return (
+            <div key={p.name} className="bg-page-white rounded-md px-4 py-3 border border-border-ash">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Icon size={14} className="text-text-fog shrink-0" />
+                <p className="font-ibm-plex-mono text-xs text-primary-violet">{p.name}</p>
+              </div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-caption text-text-fog">{p.lang}</span>
+                <span className="text-caption text-text-slate">·</span>
+                <span className="text-caption text-text-fog">{p.type}</span>
+                {p.pub && (
+                  <>
+                    <span className="text-caption text-text-slate">·</span>
+                    <span className="text-caption text-code-teal">{p.pub}</span>
+                  </>
+                )}
+              </div>
+              <p className="text-caption text-text-slate leading-relaxed">{p.desc}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function QuickStart() {
   return (
     <section id="quickstart" className="py-24">
@@ -204,7 +263,7 @@ function QuickStart() {
       <h2 className="font-ibm-plex-mono font-semibold text-heading text-text-jet mb-12 text-center">Install in seconds</h2>
       <div className="max-w-2xl mx-auto space-y-4">
         {[
-          { label: 'Python', code: 'pip install agentity-sdk-python agentity-registry agentity-auth' },
+          { label: 'Python', code: 'pip install agentity-sdk-python agentity-registry agentity-auth agentity-cli agentity-middleware-python agentity-mcp agentity-a2a' },
           { label: 'TypeScript', code: 'pnpm add @agentity/sdk' },
           { label: 'CLI', code: 'python -m agentity_cli create --owner "did:agentity:human:alice" --scope "api:read" --output agent.json' },
           { label: 'Docker', code: 'docker compose up -d' },
@@ -259,6 +318,40 @@ function Endpoints() {
             ))}
           </tbody>
         </table>
+      </div>
+    </section>
+  );
+}
+
+function DocsSection() {
+  const docs = [
+    { title: 'Getting Started', href: '/docs', desc: 'Install, create identity, sign requests, verify' },
+    { title: 'Architecture', file: 'architecture.md', desc: 'Four-layer design, request flow, package roles' },
+    { title: 'Security', file: 'security.md', desc: 'Key rotation, anti-replay, delegation, OIDC, threat model' },
+    { title: 'Registry API', file: 'registry-api.md', desc: 'All REST endpoints, WebSocket, rate limiting' },
+    { title: 'CLI Reference', file: 'cli.md', desc: 'create, inspect, verify, sign, manifest commands' },
+    { title: 'Deployment', file: 'deployment.md', desc: 'Docker Compose, env vars, production config' },
+    { title: 'Development', file: 'development.md', desc: 'Build/test/lint all 3 languages, CI/CD' },
+    { title: 'Protocol Spec', file: '../packages/agentity-spec/SPEC.md', desc: 'RFC: DID method, AID schema, verification rules' },
+  ];
+  return (
+    <section className="py-24">
+      <p className="text-text-fog text-caption font-semibold mb-3 uppercase tracking-wide text-center">Documentation</p>
+      <h2 className="font-ibm-plex-mono font-semibold text-heading text-text-jet mb-12 text-center">Guides & reference</h2>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {docs.map((d) => (
+          <a key={d.title} href={d.file ? `https://github.com/agenttity/agentity/blob/main/docs/${d.file}` : d.href}
+             className="bg-page-white rounded-md px-5 py-4 border border-border-ash hover:border-primary-violet transition-colors group">
+            <p className="font-semibold text-text-graphite text-body mb-1 group-hover:text-primary-violet transition-colors">{d.title}</p>
+            <p className="text-text-slate text-caption leading-relaxed">{d.desc}</p>
+          </a>
+        ))}
+      </div>
+      <div className="text-center mt-8">
+        <a href="/docs" className="inline-flex items-center gap-1.5 text-primary-violet text-caption font-rubik-variable font-medium hover:underline">
+          <BookOpenText size={14} />
+          Browse all documentation
+        </a>
       </div>
     </section>
   );
