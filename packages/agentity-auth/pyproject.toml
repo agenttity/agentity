@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentity-auth"
-version = "0.1.0"
+version = "0.1.1"
 description = "Agentity OIDC authentication — verify human owners via Google, GitHub, Apple, Microsoft"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
@@ -15,6 +15,12 @@ dependencies = [
     "pydantic>=2",
     "agentity-sdk-python>=0.1",
 ]
+
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/agenttity/agentity"
+Source = "https://github.com/agenttity/agentity"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.4"]

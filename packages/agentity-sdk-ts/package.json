@@ -1,6 +1,6 @@
 {
   "name": "@agentity/sdk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Agentity Protocol TypeScript SDK — identity, signer, Vercel AI SDK",
   "type": "module",
   "main": "./dist/index.js",
@@ -24,5 +24,11 @@
     "typescript": "^5.5",
     "vitest": "^2.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agenttity/agentity.git",
+    "directory": "packages/agentity-sdk-ts"
+  },
+  "homepage": "https://github.com/agenttity/agentity/tree/main/packages/agentity-sdk-ts#readme",
   "license": "Apache-2.0"
 }

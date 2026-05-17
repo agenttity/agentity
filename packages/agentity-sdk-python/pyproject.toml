@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentity-sdk-python"
-version = "0.1.0"
+version = "0.1.1"
 description = "Agentity Protocol Python SDK — identity, signer, LangChain integration"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
@@ -23,8 +23,12 @@ dev = [
     "langchain-openai>=0.1",
 ]
 
+readme = "README.md"
+
 [project.urls]
 Homepage = "https://github.com/agenttity/agentity"
+Source = "https://github.com/agenttity/agentity"
+Documentation = "https://github.com/agenttity/agentity/blob/main/packages/agentity-sdk-python/README.md"
 
 [tool.ruff]
 line-length = 120

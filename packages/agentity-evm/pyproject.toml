@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentity-evm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Agentity EVM bridge — publish DID events on-chain and verify cross-registry"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
@@ -12,6 +12,12 @@ dependencies = [
     "web3>=7",
     "pydantic>=2",
 ]
+
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/agenttity/agentity"
+Source = "https://github.com/agenttity/agentity"
 
 [tool.setuptools.packages.find]
 where = ["."]

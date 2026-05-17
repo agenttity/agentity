@@ -1,6 +1,6 @@
 {
   "name": "@agentity/manifest-gen",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Agentity provider manifest generator",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,5 +23,11 @@
     "vitest": "^2.0",
     "@types/node": "^22"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agenttity/agentity.git",
+    "directory": "packages/agentity-manifest-gen"
+  },
+  "homepage": "https://github.com/agenttity/agentity/tree/main/packages/agentity-manifest-gen#readme",
   "license": "Apache-2.0"
 }
