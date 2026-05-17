@@ -54,22 +54,22 @@ agentity sign --key agent.json --url https://api.example.com/data`} lang="bash" 
 
       <DocSection title="Package READMEs" file="">
         <div className="grid sm:grid-cols-2 gap-3">
-          {[
-            ['agentity-core', 'Rust', 'Core crypto library'],
-            ['agentity-sdk-python', 'Python', 'SDK with LangChain integration'],
-            ['agentity-sdk-ts', 'TypeScript', 'SDK for Node.js/Next.js'],
-            ['agentity-registry', 'Python', 'FastAPI REST registry'],
-            ['agentity-auth', 'Python', 'OIDC authentication plugin'],
-            ['agentity-cli', 'Python', 'Command-line interface'],
-            ['agentity-middleware-python', 'Python', 'FastAPI middleware'],
-            ['agentity-middleware-express', 'TypeScript', 'Express middleware'],
-            ['agentity-mcp', 'Python', 'MCP protocol plugin'],
-            ['agentity-a2a', 'Python', 'A2A protocol plugin'],
-            ['agentity-inspector', 'TypeScript', 'Next.js dashboard'],
-            ['agentity-manifest-gen', 'TypeScript', 'Manifest generator CLI'],
-            ['agentity-evm', 'Python+Sol', 'EVM cross-registry bridge'],
-          ].map(([name, lang, desc]) => (
-            <a key={name} href={`https://github.com/agenttity/agentity/blob/main/packages/${name.includes('/') ? name : `agentity-${name}`}/README.md`}
+          {([
+            ['agentity-core', 'Rust', 'Core crypto library', 'agentity-core'],
+            ['agentity-sdk-python', 'Python', 'SDK with LangChain integration', 'agentity-sdk-python'],
+            ['agentity-sdk-ts', 'TypeScript', 'SDK for Node.js/Next.js', 'agentity-sdk-ts'],
+            ['agentity-registry', 'Python', 'FastAPI REST registry', 'agentity-registry'],
+            ['agentity-auth', 'Python', 'OIDC authentication plugin', 'agentity-auth'],
+            ['agentity-cli', 'Python', 'Command-line interface', 'agentity-cli'],
+            ['agentity-middleware-python', 'Python', 'FastAPI middleware', 'agentity-middleware/python'],
+            ['agentity-middleware-express', 'TypeScript', 'Express middleware', 'agentity-middleware/typescript'],
+            ['agentity-mcp', 'Python', 'MCP protocol plugin', 'agentity-mcp'],
+            ['agentity-a2a', 'Python', 'A2A protocol plugin', 'agentity-a2a'],
+            ['agentity-inspector', 'TypeScript', 'Next.js dashboard', 'agentity-inspector'],
+            ['agentity-manifest-gen', 'TypeScript', 'Manifest generator CLI', 'agentity-manifest-gen'],
+            ['agentity-evm', 'Python+Sol', 'EVM cross-registry bridge', 'agentity-evm'],
+          ] as const).map(([name, lang, desc, dir]) => (
+            <a key={name} href={`https://github.com/agenttity/agentity/blob/main/packages/${dir}/README.md`}
                className="bg-page-white rounded-md p-4 border border-border-ash hover:border-primary-violet transition-colors">
               <p className="font-ibm-plex-mono text-xs text-primary-violet mb-1">{name}</p>
               <p className="text-caption text-text-fog mb-1">{lang}</p>
